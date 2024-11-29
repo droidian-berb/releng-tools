@@ -153,6 +153,7 @@ elif [ "${CIRCLECI}" == "true" ]; then
 	CI_CONFIG=".circleci/config.yml"
 	BRANCH="${CIRCLE_BRANCH}"
 	COMMIT="${CIRCLE_SHA1}"
+	REMOTE="${CIRCLE_REPOSITORY_URL)"
 	if [ -n "${CIRCLE_TAG}" ]; then
 		TAG="${CIRCLE_TAG}"
 		# Fetch the release name from the tag, and use that as comment,
@@ -200,6 +201,10 @@ if [ "${IS_CONTAINER}" != "true" ]; then
 	# Always fetch tags
 	git fetch --tags
 fi
+
+# Droidian specific metadata
+export DROIDIAN_VCS_URL="${REMOTE}"
+export DROIDIAN_VCS_REV="${COMMIT}"
 
 # Build debian/changelog
 info "Building changelog from git history"
@@ -366,6 +371,7 @@ if [ -n "${RELENG_HOST_ARCH}" ]; then
 	ARGS="${ARGS} -a${RELENG_HOST_ARCH}"
 fi
 
+export PATH="/usr/lib/releng-tools/wrappers:${PATH}"
 eval debuild "${ARGS}"
 
 # Move artifacts to the correct location if this is a non-native build
