@@ -180,6 +180,7 @@ elif [ "${IS_CONTAINER}" == "true" ]; then
 	BRANCH=$(git rev-parse --abbrev-ref HEAD)
 	COMMIT=$(git rev-parse HEAD)
 	COMMENT="${BRANCH}"
+	REMOTE=$(git remote get-url origin)
 
 	FORCE_ALLOW_EXTRA_REPOS="yes"
 
@@ -201,10 +202,6 @@ if [ "${IS_CONTAINER}" != "true" ]; then
 	# Always fetch tags
 	git fetch --tags
 fi
-
-# Droidian specific metadata
-export DROIDIAN_VCS_URL="${REMOTE}"
-export DROIDIAN_VCS_REV="${COMMIT}"
 
 # Build debian/changelog
 info "Building changelog from git history"
@@ -371,8 +368,11 @@ if [ -n "${RELENG_HOST_ARCH}" ]; then
 	ARGS="${ARGS} -a${RELENG_HOST_ARCH}"
 fi
 
-export PATH="/usr/lib/releng-tools/wrappers:${PATH}"
-eval debuild "${ARGS}"
+eval debuild \
+	--set-envvar="DROIDIAN_VCS_URL=${REMOTE}" \
+	--set-envvar="DROIDIAN_VCS_REV=${COMMIT}" \
+	--prepend-path="/usr/lib/releng-tools/wrappers" \
+	"${ARGS}"
 
 # Move artifacts to the correct location if this is a non-native build
 if [ "${non_native}" == "yes" ]; then
