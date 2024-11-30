@@ -153,7 +153,7 @@ elif [ "${CIRCLECI}" == "true" ]; then
 	CI_CONFIG=".circleci/config.yml"
 	BRANCH="${CIRCLE_BRANCH}"
 	COMMIT="${CIRCLE_SHA1}"
-	REMOTE="${CIRCLE_REPOSITORY_URL)"
+	REMOTE="${CIRCLE_REPOSITORY_URL}"
 	if [ -n "${CIRCLE_TAG}" ]; then
 		TAG="${CIRCLE_TAG}"
 		# Fetch the release name from the tag, and use that as comment,
