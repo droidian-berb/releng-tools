@@ -389,7 +389,7 @@ class SlimPackage:
 
 		if not self._release and self.tag is not None:
 			self._release = multiple_replace(self.tag, self.tag_prefixes, "").split("/")[0]
-		elif not self._release and self.branch is not None and self.branch.startswith("feature/group/"):
+		elif not self._release and self.branch is not None and self.branch.startswith("group/"):
 			self._release = self.rolling_release_replacement
 		elif not self._release and self.branch is not None:
 			self._release = self.branch.replace(self.branch_prefix, "").split("/")[0]

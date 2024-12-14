@@ -65,6 +65,7 @@ git config --global --add safe.directory ${PWD} || true
 #   throwaway debian repository must be created by the receiver
 # - staging: this comes from a push in the branch meant for production,
 #   but still hasn't been tagged yet
+# - group: Droidian groups (production)
 # - production: this comes from a push in the branch meant for production,
 #   and it has been also tagged.
 #
@@ -165,7 +166,11 @@ elif [ "${CIRCLECI}" == "true" ]; then
 		COMMENT="${CIRCLE_BRANCH}"
 		# If the branch doesn't start with feature/..., this is going to be
 		# a staging build
-		if [[ "${CIRCLE_BRANCH}" != feature/* ]]; then
+		if [[ "${CIRCLE_BRANCH}" == group/* ]]; then
+			BUILD_TYPE="group"
+		elif [[ "${CIRCLE_BRANCH}" == feature/* ]]; then
+			BUILD_TYPE="feature-branch"
+		else
 			BUILD_TYPE="staging"
 		fi
 		if [ -n "${CIRCLE_PULL_REQUEST}" ]; then
@@ -184,9 +189,13 @@ elif [ "${IS_CONTAINER}" == "true" ]; then
 
 	FORCE_ALLOW_EXTRA_REPOS="yes"
 
-	# If the branch doesn't start with feature/..., this is going to be
+	# If the branch doesn't start with feature/ or group/..., this is going to be
 	# a staging build
-	if [[ "${BRANCH}" != feature/* ]]; then
+	if [[ "${BRANCH}" == group/* ]]; then
+		BUILD_TYPE="group"
+	elif [[ "${BRANCH}" == feature/* ]]; then
+		BUILD_TYPE="feature-branch"
+	else
 		BUILD_TYPE="staging"
 	fi
 fi
@@ -205,6 +214,10 @@ fi
 
 # Build debian/changelog
 info "Building changelog from git history"
+
+if [ "${BUILD_TYPE}" == "group" ]; then
+	RELENG_BRANCH_PREFIX="group/"
+fi
 
 ARGS="--commit ${COMMIT} --comment ${COMMENT} --tag-prefix ${RELENG_TAG_PREFIX} ${RELENG_LEGACY_TAG_PREFIX} --branch-prefix ${RELENG_BRANCH_PREFIX}"
 case "${BUILD_TYPE}" in
