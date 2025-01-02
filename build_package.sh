@@ -178,14 +178,19 @@ elif [ "${CIRCLECI}" == "true" ]; then
 		fi
 	fi
 elif [ "${IS_CONTAINER}" == "true" ]; then
+	echo "Mode: IS_CONTAINER"
 	# Obtain stuff from the current directory
 
 	# Note: "production" builds are not supported at the moment.
 
 	BRANCH=$(git rev-parse --abbrev-ref HEAD)
+	echo "BRANCH: \"$BRANCH\""
 	COMMIT=$(git rev-parse HEAD)
+	echo "COMMIT: \"$COMMIT\""
 	COMMENT="${BRANCH}"
+	echo "COMMENT: \"$COMMENT\""
 	REMOTE=$(git remote get-url origin)
+	echo "REMOTE: \"$REMOTE\""
 
 	FORCE_ALLOW_EXTRA_REPOS="yes"
 
@@ -220,6 +225,7 @@ if [ "${BUILD_TYPE}" == "group" ]; then
 fi
 
 ARGS="--commit ${COMMIT} --comment ${COMMENT} --tag-prefix ${RELENG_TAG_PREFIX} ${RELENG_LEGACY_TAG_PREFIX} --branch-prefix ${RELENG_BRANCH_PREFIX}"
+echo "BUILD_TYPE: $BUILD_TYPE"
 case "${BUILD_TYPE}" in
 	"production")
 		ARGS="${ARGS} --tag ${TAG}"

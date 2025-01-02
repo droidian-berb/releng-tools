@@ -177,11 +177,12 @@ class SlimPackage:
 			for tag in self.git_repository.tags
 			if tag.name.startswith(self.tag_prefixes) or tag.name.startswith("upstream/")
 		}
-
+		print(f"El valor de self.tags es {self.tags}")
 		hint_file = os.path.join(self.git_repository.working_dir, "debian/droidian-version-hint")
 		if os.path.exists(hint_file):
 			with open(hint_file, "r") as f:
 				self.version_hint = f.read().strip() or None
+				print(f"El valor de self.version_hint é {self.version_hint}")
 		else:
 			self.version_hint = None
 
@@ -302,6 +303,7 @@ class SlimPackage:
 		Failing that, it defaults to "0.0.0".
 		"""
 
+		print(f"El valor de self._version es {self._version}")
 		if self._version is not None:
 			# Return right now to avoid defining strategies again
 			return self._version
@@ -309,6 +311,9 @@ class SlimPackage:
 		# There are a bunch of strategies to try to get an accurate version.
 		# These are tried top-bottom, and the first one to return a
 		# string wins.
+
+		print(f"lambda1 El valor de self.tag es {self.tag}")
+		print(f"lambda1: El valor de self.tag_prefixes es {self.tag_prefixes}")
 		_starting_version_strategies = [
 			# If we have a tag (i.e. production builds), use directly that,
 			# as the version is specified there.
@@ -387,6 +392,8 @@ class SlimPackage:
 		Returns the target release.
 		"""
 
+		print(f"Iniciant get_release amv valor {self._release}")
+		print(f"El valor de self.tag es {self.tag}")
 		if not self._release and self.tag is not None:
 			self._release = multiple_replace(self.tag, self.tag_prefixes, "").split("/")[0]
 		elif not self._release and self.branch is not None and self.branch.startswith("group/"):
@@ -404,6 +411,8 @@ class SlimPackage:
 
 		assert self._release
 
+		print(f"El valor de self._release és: {self._release}")
+
 		return self._release
 
 	def iter_changelog(self):
@@ -420,6 +429,8 @@ class SlimPackage:
 
 		# Use the current release/version pair as the top version
 		nearest_version = "%s/%s" % (self.release, self.version)
+
+		print(f"El valor de nearest_version és {nearest_version}")
 
 		entries = OrderedDict()
 
