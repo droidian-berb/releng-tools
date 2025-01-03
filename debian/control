@@ -17,8 +17,8 @@ Depends: ${misc:Depends},
          git,
          git-lfs,
          findutils,
-         equivs,
-         devscripts [!arm64]
+         equivs
+Recommends: devscripts
 Description: Release engineering tools for droidian
  This package contains various tools related to droidian's
  release engineering processes.
