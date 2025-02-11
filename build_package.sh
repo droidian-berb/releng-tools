@@ -372,6 +372,9 @@ else
 	git submodule update --init --recursive --depth 1
 fi
 
+# TODO: Check for clang custom toolchain
+  # Will check for vars in kernel-info.mk
+
 # Finally build the package
 info "Building package"
 
@@ -395,6 +398,7 @@ fi
 eval debuild \
 	--set-envvar="DROIDIAN_VCS_URL=${REMOTE}" \
 	--set-envvar="DROIDIAN_VCS_REV=${COMMIT}" \
+	--set-envvar="CLANG_CUSTOM_PATH=${CLANG_CUSTOM_PATH}" \
 	--prepend-path="/usr/lib/releng-tools/wrappers" \
 	"${ARGS}"
 
